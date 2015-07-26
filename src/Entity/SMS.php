@@ -18,7 +18,7 @@ use Drupal\Component\Serialization\Json;
  *
  * @ContentEntityType(
  *   id = "telstra_sms",
- *   label = @Translation("Telstra SMS"),
+ *   label = @Translation("SMS message"),
  *   handlers = {
  *     "form" = {
  *       "default" = "Drupal\telstrasms\Form\TelstraSMS",
@@ -94,7 +94,7 @@ class SMS extends ChannelBase implements SMSInterface {
     $response = Json::decode($result->getBody());
     $headers = [
       'Authorization' => 'Bearer '. $response->access_token,
-      'Content-Type' => 'application/json'
+      'Content-Type' => 'application/json',
     ];
 
     foreach ($messages as $message) {
