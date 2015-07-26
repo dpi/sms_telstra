@@ -1,0 +1,9 @@
+name: Telstra SMS
+type: module
+description: 'Adds a Telstra SMS sending method to Courier. UNSUPPORTED | EXPERIMENTAL'
+package: Courier
+core: 8.x
+dependencies:
+ - composer_manager
+ - courier
+ - telephone

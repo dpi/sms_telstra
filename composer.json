@@ -1,0 +1,15 @@
+{
+  "name": "drupal/telstrasms",
+  "description": "Telstra SMS Drupal Module",
+  "type": "drupal-module",
+  "homepage": "https://github.com/dpi/telstrasms",
+  "authors": [
+    {
+      "name": "Daniel Phin",
+      "email": "pro@danielph.in",
+      "homepage": "http://danielph.in",
+      "role": "Maintainer"
+    }
+  ],
+  "license": "BSD 3"
+}
