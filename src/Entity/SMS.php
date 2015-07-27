@@ -73,6 +73,22 @@ class SMS extends ChannelBase implements SMSInterface {
   /**
    * {@inheritdoc}
    */
+  public function applyTokens() {
+    $tokens = $this->getTokenValues();
+    $this->setMessage(\Drupal::token()->replace($this->getMessage(), $tokens));
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function isEmpty() {
+    return empty($this->getMessage());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   static public function sendMessages(array $messages, $options = []) {
     /** @var static[] $messages */
 
