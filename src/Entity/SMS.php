@@ -12,6 +12,7 @@ use Drupal\telstrasms\SMSInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Component\Serialization\Json;
+use Drupal\courier\Exception\ChannelFailure;
 
 /**
  * Defines storage for a SMS.
@@ -114,6 +115,10 @@ class SMS extends ChannelBase implements SMSInterface {
     ];
 
     foreach ($messages as $message) {
+      if ($message->getPhoneNumber()) {
+        throw new ChannelFailure('SMS send failure');
+      }
+
       $result = \Drupal::httpClient()
         ->post($base_uri . 'sms/messages', [
           'headers' => $headers,

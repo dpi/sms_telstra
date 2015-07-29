@@ -11,6 +11,7 @@ namespace Drupal\telstrasms\Plugin\IdentityChannel\TelstraSMS;
 use Drupal\courier\Plugin\IdentityChannel\IdentityChannelPluginInterface;
 use Drupal\courier\ChannelInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\courier\Exception\IdentityException;
 
 /**
  * Supports core user entities.
@@ -31,7 +32,12 @@ class User implements IdentityChannelPluginInterface {
   public function applyIdentity(ChannelInterface &$message, EntityInterface $identity) {
     /** @var \Drupal\user\UserInterface $identity */
     /** @var \Drupal\telstrasms\Entity\SMS $message */
-    $message->setPhoneNumber('0400000000');//@todo get phone number from user entity
+
+    if (empty($identity->{'field_phone_number'}->value)) {
+      throw new IdentityException('User does not have a phone number.');
+    }
+
+    $message->setPhoneNumber($identity->{'field_phone_number'}->value);
   }
 
 }
