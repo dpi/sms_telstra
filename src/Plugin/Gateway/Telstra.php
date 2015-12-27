@@ -15,34 +15,15 @@ use Drupal\Component\Serialization\Json;
  * @SmsGateway(
  *   id = "telstra",
  *   label = @Translation("Telstra"),
- *   configurable = false,
+ *   configurable = true,
  * )
  */
 class Telstra extends GatewayBase {
 
   /**
-   * Construct a new Telstra plugin.
-   *
-   * @param array $configuration
-   *   The configuration to use and build the SMS gateway.
-   * @param string $plugin_id
-   *   The gateway id.
-   * @param mixed $plugin_definition
-   *   The gateway plugin definition.
-   */
-//  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
-//    parent::__construct($configuration, $plugin_id, $plugin_definition);
-//  }
-
-  /**
    * {@inheritdoc}
    */
   public function send(SmsMessageInterface $sms, array $options) {
-    // Log sms message to drupal logger.
-//    $this->logger()->notice('SMS message sent to %number with the text: @message',
-//      ['%number' => implode(', ', $sms->getRecipients()), '@message' => $sms->getMessage()]);
-
-
 
     // Configuration
     // @todo move to module config.
