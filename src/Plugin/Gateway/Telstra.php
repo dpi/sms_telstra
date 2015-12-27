@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\telstra_sms\Plugin\Gateway\Telstra
+ * Contains \Drupal\sms_telstra\Plugin\Gateway\Telstra
  */
 
-namespace Drupal\telstra_sms\Plugin\Gateway;
+namespace Drupal\sms_telstra\Plugin\Gateway;
 
 use Drupal\sms\Gateway\GatewayBase;
 use Drupal\sms\Message\SmsMessageInterface;

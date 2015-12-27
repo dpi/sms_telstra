@@ -1,8 +1,8 @@
 {
-  "name": "drupal/telstrasms",
-  "description": "Telstra SMS Drupal Module",
+  "name": "drupal/sms_telstra",
+  "description": "Telstra SMS",
   "type": "drupal-module",
-  "homepage": "https://github.com/dpi/telstrasms",
+  "homepage": "https://github.com/dpi/sms_telstra",
   "authors": [
     {
       "name": "Daniel Phin",

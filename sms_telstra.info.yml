@@ -4,5 +4,4 @@ description: 'Adds a Telstra SMS gateway to SMS Framework.'
 package: SMS Framework
 core: 8.x
 dependencies:
- - composer_manager
  - sms
