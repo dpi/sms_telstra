@@ -1,0 +1,10 @@
+sms_gateway.settings.telstra:
+  type: sms_gateway_settings
+  label: 'Telstra'
+  mapping:
+    consumer_key:
+      type: string
+      label: 'Consumer Key'
+    consumer_secret:
+      type: string
+      label: 'Consumer Secret'

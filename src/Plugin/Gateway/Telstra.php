@@ -16,7 +16,6 @@ use GuzzleHttp\Exception\RequestException;
  * @SmsGateway(
  *   id = "telstra",
  *   label = @Translation("Telstra"),
- *   configurable = true,
  * )
  */
 class Telstra extends GatewayBase {
@@ -35,6 +34,8 @@ class Telstra extends GatewayBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
+
     $config = $this->getConfiguration();
 
     $form['help'] = [
@@ -73,26 +74,40 @@ class Telstra extends GatewayBase {
     $client = \Drupal::httpClient();
     $base_uri = 'https://api.telstra.com/v1/';
 
-    $access_token = $this->telstra_authenticate();
+    try {
+      $access_token = $this->telstra_authenticate();
+    }
+    catch (RequestException $e) {
+      return new SmsMessageResult([
+        'error_message' => $e->getMessage(),
+        'status' => FALSE,
+      ]);
+    }
+
+    $settings = [
+      'headers' => [
+        'Authorization' => 'Bearer ' . $access_token,
+        'Content-Type' => 'application/json',
+      ],
+      'json' => [
+        'body' => $sms->getMessage(),
+      ],
+      'connect_timeout' => 10,
+      'debug' => 'true',
+    ];
 
     foreach ($sms->getRecipients() as $recipient) {
+      $settings['json']['to'] = $recipient;
       try {
-        $result = $client->post($base_uri . 'sms/messages', [
-          'headers' => [
-            'Authorization' => 'Bearer ' . $access_token,
-            'Content-Type' => 'application/json',
-          ],
-          'json' => [
-            'to' => $recipient,
-            'body' => $sms->getMessage(),
-          ],
-        ]);
+        $result = $client->post($base_uri . 'sms/messages', $settings);
 //        $response = Json::decode($result->getBody());
 //        $response['messageId'];
       }
       catch (RequestException $e) {
-        // Throws 400 for invalid numbers.
-        return new SmsMessageResult(['status' => FALSE]);
+        return new SmsMessageResult([
+          'error_message' => $e->getMessage(),
+          'status' => FALSE,
+        ]);
       }
 
     }
@@ -105,6 +120,9 @@ class Telstra extends GatewayBase {
    *
    * @return string|FALSE
    *   Access token for use in auth requests or FALSE if failed.
+   *
+   * @throws RequestException
+   *   Throws on failed HTTP request.
    */
   private function telstra_authenticate() {
     $client = \Drupal::httpClient();
@@ -113,21 +131,16 @@ class Telstra extends GatewayBase {
     $client_id = $this->configuration['consumer_key'];
     $secret = $this->configuration['consumer_secret'];
 
-    try {
-      $result = $client->post($base_uri . 'oauth/token', [
-        'form_params' => [
-          'client_id' => $client_id,
-          'client_secret' => $secret,
-          'grant_type' => 'client_credentials',
-          'scope' => 'SMS'
-        ],
-      ]);
-      $response = Json::decode($result->getBody());
-      return $response['access_token'];
-    }
-    catch (RequestException $e) {
-      return FALSE;
-    }
+    $result = $client->post($base_uri . 'oauth/token', [
+      'form_params' => [
+        'client_id' => $client_id,
+        'client_secret' => $secret,
+        'grant_type' => 'client_credentials',
+        'scope' => 'SMS'
+      ],
+    ]);
+    $response = Json::decode($result->getBody());
+    return $response['access_token'];
   }
 
 }
