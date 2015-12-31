@@ -38,19 +38,25 @@ class Telstra extends GatewayBase {
 
     $config = $this->getConfiguration();
 
-    $form['help'] = [
+    $form['telstra'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Telstra'),
+      '#open' => TRUE,
+    ];
+
+    $form['telstra']['help'] = [
       '#type' => 'html_tag',
       '#tag' => 'p',
       '#value' => $this->t('API keys can be found at <a href="https://dev.telstra.com/user/me/apps">https://dev.telstra.com/user/me/apps</a>.'),
     ];
 
-    $form['consumer_key'] = [
+    $form['telstra']['consumer_key'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Consumer Key'),
       '#default_value' => $config['consumer_key'],
     ];
 
-    $form['consumer_secret'] = [
+    $form['telstra']['consumer_secret'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Consumer Secret'),
       '#default_value' => $config['consumer_secret'],
