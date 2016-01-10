@@ -1,12 +1,12 @@
 <?php
 /**
  * @file
- * Contains \Drupal\sms_telstra\Plugin\Gateway\Telstra
+ * Contains \Drupal\sms_telstra\Plugin\SmsGateway\Telstra
  */
 
-namespace Drupal\sms_telstra\Plugin\Gateway;
+namespace Drupal\sms_telstra\Plugin\SmsGateway;
 
-use Drupal\sms\Gateway\GatewayBase;
+use Drupal\sms\Plugin\SmsGatewayPluginBase;
 use Drupal\sms\Message\SmsMessageInterface;
 use Drupal\sms\Message\SmsMessageResult;
 use Drupal\Component\Serialization\Json;
@@ -18,7 +18,7 @@ use GuzzleHttp\Exception\RequestException;
  *   label = @Translation("Telstra"),
  * )
  */
-class Telstra extends GatewayBase {
+class Telstra extends SmsGatewayPluginBase {
 
   /**
    * {@inheritdoc}
