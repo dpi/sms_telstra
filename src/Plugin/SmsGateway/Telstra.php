@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\sms_telstra\Plugin\SmsGateway\Telstra
- */
 
 namespace Drupal\sms_telstra\Plugin\SmsGateway;
 
@@ -11,11 +7,13 @@ use Drupal\sms\Message\SmsMessageInterface;
 use Drupal\sms\Message\SmsMessageResult;
 use Drupal\Component\Serialization\Json;
 use GuzzleHttp\Exception\RequestException;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * @SmsGateway(
  *   id = "telstra",
  *   label = @Translation("Telstra"),
+ *   outgoing_message_max_recipients = 1,
  * )
  */
 class Telstra extends SmsGatewayPluginBase {
@@ -33,7 +31,7 @@ class Telstra extends SmsGatewayPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
     $config = $this->getConfiguration();
@@ -68,7 +66,7 @@ class Telstra extends SmsGatewayPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     $this->configuration['consumer_key'] = $form_state->getValue('consumer_key');
     $this->configuration['consumer_secret'] = $form_state->getValue('consumer_secret');
   }
@@ -76,7 +74,7 @@ class Telstra extends SmsGatewayPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function send(SmsMessageInterface $sms, array $options) {
+  public function send(SmsMessageInterface $sms_message) {
     $client = \Drupal::httpClient();
     $base_uri = 'https://api.telstra.com/v1/';
 
