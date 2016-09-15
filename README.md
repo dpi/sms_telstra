@@ -1,4 +1,4 @@
-Copyright Daniel Phin (@dpi) 2015
+Copyright Daniel Phin (@dpi) 2016
 
 # License
 
