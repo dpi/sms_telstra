@@ -3,24 +3,33 @@
 namespace Drupal\sms_telstra\Plugin\SmsGateway;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\sms\Direction;
+use Drupal\sms\Entity\SmsGatewayInterface;
 use Drupal\sms\Message\SmsDeliveryReport;
 use Drupal\sms\Message\SmsMessageResultStatus;
 use Drupal\sms\Message\SmsMessageReportStatus;
 use Drupal\sms\Plugin\SmsGatewayPluginBase;
 use Drupal\sms\Message\SmsMessageInterface;
 use Drupal\sms\Message\SmsMessageResult;
+use Drupal\sms\Message\SmsMessage;
+use Drupal\sms\SmsProcessingResponse;
 
 /**
  * @SmsGateway(
  *   id = "telstra",
  *   label = @Translation("Telstra"),
  *   outgoing_message_max_recipients = 1,
+ *   incoming = TRUE,
+ *   incoming_route = TRUE,
  *   reports_pull = TRUE,
  *   reports_push = TRUE,
  * )
@@ -244,6 +253,52 @@ class Telstra extends SmsGatewayPluginBase implements ContainerFactoryPluginInte
     }
 
     return $result;
+  }
+
+  /**
+   * Process an incoming message POST request.
+   *
+   * Telstra only passes one message per request.
+   *
+   * API documentation:
+   *   https://dev.telstra.com/content/sms-getting-started#callback
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
+   * @param \Drupal\sms\Entity\SmsGatewayInterface $sms_gateway
+   *   The gateway instance.
+   *
+   * @return \Drupal\sms\SmsProcessingResponse
+   *   A SMS processing response task.
+   */
+  function processIncoming(Request $request, SmsGatewayInterface $sms_gateway) {
+    $messages = [];
+
+    $json = Json::decode($request->getContent());
+
+    $time_atom = $json['acknowledgedTimestamp'];
+    $time = DrupalDateTime::createFromFormat(DATE_ATOM, $time_atom);
+
+    $report = (new SmsDeliveryReport())
+      ->setMessageId($json['messageId'])
+      ->setTimeDelivered($time->format('U'));
+
+    $result = (new SmsMessageResult())
+      ->setReports([$report]);
+
+    $message = (new SmsMessage())
+      ->setMessage($json['content'])
+      ->setDirection(Direction::INCOMING)
+      ->setGateway($sms_gateway)
+      ->setResult($result)
+      ->setOption('telstra_status', $json['status']);
+
+    $response = new Response('', 204);
+    $task = (new SmsProcessingResponse())
+      ->setResponse($response)
+      ->setMessages([$message]);
+
+    return $task;
   }
 
   /**
