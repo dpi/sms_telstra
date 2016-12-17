@@ -147,15 +147,17 @@ class Telstra extends SmsGatewayPluginBase implements ContainerFactoryPluginInte
     ];
 
     $recipients = $sms_message->getRecipients();
-    $report = new SmsDeliveryReport();
+
     if (count($recipients) != 1) {
-      $report
-        ->setStatus(SmsMessageReportStatus::INVALID_RECIPIENT)
-        ->setStatusMessage((string) $this->t('This gateway can only take one recipient per request.'));
-      return $result->setReports([$report]);
+      $result
+        ->setError(SmsMessageResultStatus::ERROR)
+        ->setErrorMessage((string) $this->t('This gateway can only take one recipient per request.'));
+      return $result;
     }
 
     $recipient = $recipients[0];
+    $report = (new SmsDeliveryReport())
+      ->setRecipient($recipient);
 
     if (substr($recipient, 0, 1) == '+') {
       // Remove plus prefix.
