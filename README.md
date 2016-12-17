@@ -1,5 +1,7 @@
 Copyright Daniel Phin (@dpi) 2016
 
+[![Build Status](https://travis-ci.org/dpi/sms_telstra.svg?branch=8.x-1.x)](https://travis-ci.org/dpi/sms_telstra)
+
 # License
 
 This program is free software; you can redistribute it and/or modify
