@@ -152,7 +152,6 @@ class Telstra extends SmsGatewayPluginBase implements ContainerFactoryPluginInte
         'body' => $sms_message->getMessage(),
       ],
       'connect_timeout' => 10,
-      'debug' => 'true',
     ];
 
     $recipients = $sms_message->getRecipients();
