@@ -1,0 +1,7 @@
+services:
+  sms_telstra.authentication_api:
+    class: Telstra_Messaging\Api\AuthenticationApi
+  sms_telstra.messaging_api:
+    class: Telstra_Messaging\Api\MessagingApi
+  sms_telstra.provisioning_api:
+    class: Telstra_Messaging\Api\ProvisioningApi
